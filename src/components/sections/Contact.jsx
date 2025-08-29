@@ -1,96 +1,90 @@
 import { useState } from "react";
 import { RevealOnScroll } from "../RevealOnScroll";
-import emailjs from "emailjs-com";
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-export const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x000000);
+renderer.setPixelRatio(window.devicePixelRatio);
+
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+camera.position.set(4, 5, 11);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.enablePan = false;
+controls.minDistance = 5;
+controls.maxDistance = 20;
+controls.minPolarAngle = 0.5;
+controls.maxPolarAngle = 1.5;
+controls.autoRotate = false;
+controls.target = new THREE.Vector3(0, 1, 0);
+controls.update();
+
+const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
+groundGeometry.rotateX(-Math.PI / 2);
+const groundMaterial = new THREE.MeshStandardMaterial({
+  color: 0x555555,
+  side: THREE.DoubleSide
+});
+const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+groundMesh.castShadow = false;
+groundMesh.receiveShadow = true;
+scene.add(groundMesh);
+
+const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
+spotLight.position.set(0, 25, 0);
+spotLight.castShadow = true;
+spotLight.shadow.bias = -0.0001;
+scene.add(spotLight);
+
+const loader = new GLTFLoader().setPath('public/test_gltf/');
+loader.load('scene.gltf', (gltf) => {
+  console.log('loading model');
+  const mesh = gltf.scene;
+
+  mesh.traverse((child) => {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  mesh.position.set(0, 1.05, -1);
+  scene.add(mesh);
 
-    emailjs
-      .sendForm(
-        import.meta.env.VITE_SERVICE_ID,
-        import.meta.env.VITE_TEMPLATE_ID,
-        e.target,
-        import.meta.env.VITE_PUBLIC_KEY
-      )
-      .then((result) => {
-        alert("Message Sent!");
-        setFormData({ name: "", email: "", message: "" });
-      })
-      .catch(() => alert("Oops! Something went wrong. Please try again."));
-  };
+  document.getElementById('progress-container').style.display = 'none';
+}, (xhr) => {
+  console.log(`loading ${xhr.loaded / xhr.total * 100}%`);
+}, (error) => {
+  console.error(error);
+});
 
-  return (
-    <section
-      id="contact"
-      className="min-h-screen flex items-center justify-center py-20"
-    >
-      <RevealOnScroll>
-        <div className="px-4 w-full min-w-[300px] md:w-[500px] sm:w-2/3 p-6">
-          <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent text-center">
-            {" "}
-            Get In Touch
-          </h2>
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="relative">
-              <input
-                type="text"
-                id="name"
-                name="name"
-                required
-                value={formData.name}
-                className="w-full bg-white/5 border border-white/10 rounded px-4 py-3 text-white transition focus:outline-none focus:border-blue-500 focus:bg-blue-500/5"
-                placeholder="Name..."
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-              />
-            </div>
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
 
-            <div className="relative">
-              <input
-                type="email"
-                id="email"
-                name="email"
-                required
-                value={formData.email}
-                className="w-full bg-white/5 border border-white/10 rounded px-4 py-3 text-white transition focus:outline-none focus:border-blue-500 focus:bg-blue-500/5"
-                placeholder="example@gmail.com"
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-              />
-            </div>
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
 
-            <div className="relative">
-              <textarea
-                id="message"
-                name="message"
-                required
-                rows={5}
-                value={formData.message}
-                className="w-full bg-white/5 border border-white/10 rounded px-4 py-3 text-white transition focus:outline-none focus:border-blue-500 focus:bg-blue-500/5"
-                placeholder="Your Message..."
-                onChange={(e) =>
-                  setFormData({ ...formData, message: e.target.value })
-                }
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white py-3 px-6 rounded font-medium transition relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(59,130,246,0.4)]"
-            >
-              Send Message
-            </button>
-          </form>
-        </div>
+animate();
       </RevealOnScroll>
     </section>
   );
