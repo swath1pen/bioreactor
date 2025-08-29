@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { RevealOnScroll } from "../RevealOnScroll";
+
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -50,7 +50,7 @@ spotLight.castShadow = true;
 spotLight.shadow.bias = -0.0001;
 scene.add(spotLight);
 
-const loader = new GLTFLoader().setPath('public/circle/');
+const loader = new GLTFLoader().setPath('public/millennium_falcon/');
 loader.load('scene.gltf', (gltf) => {
   console.log('loading model');
   const mesh = gltf.scene;
@@ -85,7 +85,3 @@ function animate() {
 }
 
 animate();
-      </RevealOnScroll>
-    </section>
-  );
-};
