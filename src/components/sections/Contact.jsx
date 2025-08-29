@@ -71,7 +71,7 @@ export const Contact = () => {
     // Loader - Use proper path for public assets
     const loader = new GLTFLoader();
     loader.load(
-      "/circle/scene.gltf",
+      "/public/circle/scene.gltf",
       (gltf) => {
         const mesh = gltf.scene;
         mesh.traverse((child) => {
