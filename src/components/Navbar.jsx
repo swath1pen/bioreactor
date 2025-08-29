@@ -47,7 +47,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
               className="text-gray-300 hove:text-white transition-colors"
             >
               {" "}
-              Contact{" "}
+              Model{" "}
             </a>
           </div>
         </div>
