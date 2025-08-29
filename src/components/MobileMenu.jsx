@@ -65,7 +65,7 @@ export const MobileMenu = ({ menuOpen, setMenuOpen }) => {
             }        
     `}
       >
-        Contact
+        Model
       </a>
     </div>
   );
