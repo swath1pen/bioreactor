@@ -24,7 +24,11 @@ export const Contact = () => {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    mountRef.current.appendChild(renderer.domElement);
+
+    // Attach renderer DOM element
+    if (mountRef.current) {
+      mountRef.current.appendChild(renderer.domElement);
+    }
 
     // Scene
     scene = new THREE.Scene();
@@ -64,10 +68,10 @@ export const Contact = () => {
     spotLight.shadow.bias = -0.0001;
     scene.add(spotLight);
 
-    // Loader
-    const loader = new GLTFLoader().setPath("public/circle/");
+    // Loader - Use proper path for public assets
+    const loader = new GLTFLoader();
     loader.load(
-      "scene.gltf",
+      "/circle/scene.gltf",
       (gltf) => {
         const mesh = gltf.scene;
         mesh.traverse((child) => {
@@ -78,12 +82,13 @@ export const Contact = () => {
         });
         mesh.position.set(0, 1.05, -1);
         scene.add(mesh);
+
         // Hide progress container if used
         const progress = document.getElementById("progress-container");
         if (progress) progress.style.display = "none";
       },
       (xhr) => {
-        console.log(`loading ${xhr.loaded / xhr.total * 100}%`);
+        console.log(`loading ${(xhr.loaded / xhr.total) * 100}%`);
       },
       (error) => {
         console.error(error);
@@ -110,24 +115,16 @@ export const Contact = () => {
     return () => {
       cancelAnimationFrame(animationId);
       window.removeEventListener("resize", handleResize);
-      if (renderer) {
+      if (renderer && mountRef.current) {
         mountRef.current.removeChild(renderer.domElement);
         renderer.dispose();
       }
     };
   }, []);
 
+  // IMPORTANT: Render the mount ref!
   return (
-    <section
-      id="contact"
-      className="min-h-screen flex items-center justify-center py-20"
-    >
-      <RevealOnScroll>
-        <div
-          ref={mountRef}
-          className="px-4 w-full min-w-[300px] md:w-[500px] sm:w-2/3 p-6"
-        ></div>
-      </RevealOnScroll>
-    </section>
+    <div ref={mountRef} style={{ width: "100vw", height: "100vh" }} />
   );
 };
+
