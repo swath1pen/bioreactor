@@ -24,11 +24,7 @@ export const Contact = () => {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-    // Attach renderer DOM element
-    if (mountRef.current) {
-      mountRef.current.appendChild(renderer.domElement);
-    }
+    mountRef.current.appendChild(renderer.domElement);
 
     // Scene
     scene = new THREE.Scene();
@@ -68,10 +64,10 @@ export const Contact = () => {
     spotLight.shadow.bias = -0.0001;
     scene.add(spotLight);
 
-    // Loader - Use proper path for public assets
+    // Loader
     const loader = new GLTFLoader();
     loader.load(
-      "/public/circle/scene.gltf",
+      "/circle/scene.gltf", // Corrected: path must be from public root
       (gltf) => {
         const mesh = gltf.scene;
         mesh.traverse((child) => {
@@ -80,15 +76,42 @@ export const Contact = () => {
             child.receiveShadow = true;
           }
         });
-        mesh.position.set(0, 1.05, -1);
+
+        // --- Force visible size and position ---
+        mesh.scale.set(2, 2, 2); // Boost size (adjust if needed)
         scene.add(mesh);
+
+        // Calculate bounding box and center:
+        const box = new THREE.Box3().setFromObject(mesh);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+
+        // Reposition mesh to center it:
+        mesh.position.x += (mesh.position.x - center.x);
+        mesh.position.y += (mesh.position.y - center.y);
+        mesh.position.z += (mesh.position.z - center.z);
+
+        // Adjust camera for full model view
+        const maxDim = Math.max(size.x, size.y, size.z);
+        camera.position.set(center.x + maxDim * 2, center.y + maxDim * 1.5, center.z + maxDim * 2.5);
+        camera.lookAt(center);
+
+        // OrbitControls focus
+        controls.target.copy(center);
+        controls.update();
+
+        // Debug info
+        console.log("Model center:", center);
+        console.log("Model size:", size);
 
         // Hide progress container if used
         const progress = document.getElementById("progress-container");
         if (progress) progress.style.display = "none";
       },
       (xhr) => {
-        console.log(`loading ${(xhr.loaded / xhr.total) * 100}%`);
+        if (xhr.total) {
+          console.log(`loading ${(xhr.loaded / xhr.total) * 100}%`);
+        }
       },
       (error) => {
         console.error(error);
@@ -122,9 +145,10 @@ export const Contact = () => {
     };
   }, []);
 
-  // IMPORTANT: Render the mount ref!
+  // Be sure to render the mount ref div!
   return (
     <div ref={mountRef} style={{ width: "100vw", height: "100vh" }} />
   );
 };
+
 
