@@ -67,7 +67,7 @@ export const Contact = () => {
     // Loader
     const loader = new GLTFLoader().setPath("public/circle/");
     loader.load(
-      "scene.gltf",
+      "2CylinderEngine.gltf",
       (gltf) => {
         const mesh = gltf.scene;
         mesh.traverse((child) => {
