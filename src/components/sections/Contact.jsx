@@ -50,7 +50,7 @@ spotLight.castShadow = true;
 spotLight.shadow.bias = -0.0001;
 scene.add(spotLight);
 
-const loader = new GLTFLoader().setPath('public/test_gltf/');
+const loader = new GLTFLoader().setPath('public/circle/');
 loader.load('scene.gltf', (gltf) => {
   console.log('loading model');
   const mesh = gltf.scene;
