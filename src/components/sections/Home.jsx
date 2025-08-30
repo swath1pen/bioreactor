@@ -2,12 +2,15 @@ import { RevealOnScroll } from "../RevealOnScroll";
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { useRef } from "react";
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
+import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 
-// Rotating STL model component, scaled smaller
+// Rotating STL model component with hardcoded URL
 function RotatingSTL() {
   const meshRef = useRef();
-  const geometry = useLoader(STLLoader, "/bioreactor.stl"); // STL file in public dir
+  const geometry = useLoader(
+    STLLoader,
+    "https://raw.githubusercontent.com/swath1pen/bioreactor/main/public/bioreactor.stl"
+  );
 
   useFrame(() => {
     if (meshRef.current) {
@@ -66,7 +69,7 @@ export const Home = () => {
             <a
               href="#projects"
               className="bg-emerald-300 text-white py-3 px-6 rounded font-medium transition-all duration-200 
-              hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(59, 130, 246, 0.2)] hover:bg-blue-500/10"
+                hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(59, 130, 246, 0.2)] hover:bg-blue-500/10"
             >
               Part List
             </a>
