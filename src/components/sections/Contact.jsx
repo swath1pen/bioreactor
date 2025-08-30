@@ -22,7 +22,7 @@ const Contact = () => {
   const scene = new THREE.Scene();
 
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-  camera.position.set(4, 5, 11);
+  camera.position.set(8, 7, 18);
 
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
@@ -32,7 +32,7 @@ const Contact = () => {
   controls.minPolarAngle = 0.5;
   controls.maxPolarAngle = 1.5;
   controls.autoRotate = false;
-  controls.target = new THREE.Vector3(0, 1, 0);
+  controls.target = new THREE.Vector3(0, 2, 0);
   controls.update();
 
   const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
