@@ -110,33 +110,7 @@ const Contact = () => {
     };
   }, []);
 
-  // --- Improved Header Design ---
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <div
-        style={{
-          background: "linear-gradient(90deg, #2A6D40 0%, #50c878 100%)",
-          borderRadius: "1.5rem 1.5rem 0 0",
-          boxShadow: "0 8px 24px rgba(30,40,90,0.12)",
-          textAlign: "center",
-          padding: "2.5rem 0 1.5rem 0",
-          margin: "0 1.5rem",
-          position: "relative",
-          top: "1rem",
-        }}
-      >
-        <h1
-          style={{
-            color: "#fafaff",
-            fontSize: "2.8rem",
-            letterSpacing: "0.12em",
-            fontWeight: 800,
-            textShadow: "0 2px 12px rgba(0,0,32,0.28)",
-            margin: 0,
-          }}
-        >
-          3D Render
-        </h1>
       </div>
       <div
         ref={mountRef}
