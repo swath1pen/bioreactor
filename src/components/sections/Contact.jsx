@@ -9,72 +9,80 @@ const Contact = () => {
   useEffect(() => {
     // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setClearColor(0x000000);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-
     if (mountRef.current) mountRef.current.appendChild(renderer.domElement);
 
     // Scene
     const scene = new THREE.Scene();
 
-    // Camera
+    // Camera (matching your working FOV and position)
     const camera = new THREE.PerspectiveCamera(
-      45,
+      95,
       window.innerWidth / window.innerHeight,
       1,
-      1000
+      10000
     );
-    camera.position.set(0, 0, 5);
+    camera.position.set(0, 4, 10);
 
-    // Orbit Controls with auto-rotation
+    // Controls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.enablePan = true;
     controls.minDistance = 2;
-    controls.maxDistance = 50;
+    controls.maxDistance = 100;
     controls.minPolarAngle = 0;
     controls.maxPolarAngle = Math.PI;
-    controls.autoRotate = true;              // <<< Enable auto-rotation
-    controls.autoRotateSpeed = 1.0;          // Adjust rotation speed
-    controls.target.set(0, 0, 0);
+    controls.autoRotate = false; // Set true for auto
+    controls.target.set(0, 1, 0);
     controls.update();
 
-    // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
-    scene.add(ambientLight);
+    // Light
+    const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
+    spotLight.position.set(0, 25, 0);
+    spotLight.castShadow = true;
+    spotLight.shadow.bias = -0.0001;
+    scene.add(spotLight);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    dirLight.position.set(5, 10, 7.5);
-    scene.add(dirLight);
-
-    // Model loader, auto-center & scale, reference holder for rotation
-    let modelRef = null;
+    // Model Loader - match vanilla
     const loader = new GLTFLoader();
     loader.load(
-      "/scene.gltf",
+      "/scene.gltf", // React projects must use / at the root; public/scene.gltf in filesystem
       (gltf) => {
-        const model = gltf.scene;
+        const mesh = gltf.scene;
+        mesh.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
+        scene.add(mesh);
 
-        // Center and scale
-        const box = new THREE.Box3().setFromObject(model);
-        const size = new THREE.Vector3();
-        box.getSize(size);
-        const center = new THREE.Vector3();
+        // Auto-scale and center model, as in your vanilla
+        const box = new THREE.Box3().setFromObject(mesh);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        const desiredSize = 9;
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scale = desiredSize / maxDim;
+        mesh.scale.set(scale, scale, scale);
+
+        // Re-center after scaling
+        box.setFromObject(mesh);
         box.getCenter(center);
+        mesh.position.x += (0 - center.x);
+        mesh.position.y += (1 - center.y);
+        mesh.position.z += (0 - center.z);
 
-        model.position.x += (model.position.x - center.x);
-        model.position.y += (model.position.y - center.y);
-        model.position.z += (model.position.z - center.z);
-
-        const maxDimension = Math.max(size.x, size.y, size.z);
-        if (maxDimension > 0) {
-          model.scale.multiplyScalar(2.2 / maxDimension);
-        }
-
-        scene.add(model);
-        modelRef = model; // Save reference
+        // Camera and controls
+        camera.position.set(0, 4, 10);
+        camera.lookAt(0, 1, 0);
+        controls.target.set(0, 1, 0);
+        controls.update();
       },
       undefined,
       (error) => {
@@ -82,7 +90,7 @@ const Contact = () => {
       }
     );
 
-    // Handle resize
+    // Resize
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -90,16 +98,10 @@ const Contact = () => {
     };
     window.addEventListener("resize", handleResize);
 
-    // Animation loop
+    // Animate
     let animationId;
     const animate = () => {
       animationId = requestAnimationFrame(animate);
-
-      // Optionally: Rotate model itself for double auto-rotation
-      // if (modelRef) {
-      //   modelRef.rotation.y += 0.01;
-      // }
-
       controls.update();
       renderer.render(scene, camera);
     };
@@ -137,6 +139,7 @@ const Contact = () => {
 };
 
 export default Contact;
+
 
 
 
