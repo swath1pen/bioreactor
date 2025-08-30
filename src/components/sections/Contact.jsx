@@ -110,19 +110,9 @@ const Contact = () => {
     };
   }, []);
 
-  return (
-      </div>
-      <div
-        ref={mountRef}
-        style={{
-          flex: 1,
-          minHeight: 0,
-          minWidth: 0,
-          position: "relative",
-        }}
-      ></div>
-    </div>
-  );
+return (
+  <div ref={mountRef} style={{ flex: 1, minHeight: 0, minWidth: 0, position: "relative" }}></div>
+);
 };
 
 export default Contact;
