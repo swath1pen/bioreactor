@@ -67,4 +67,86 @@ const Contact = () => {
         mesh.position.set(0, 1.05, 1);
         scene.add(mesh);
 
-        const progressEl = document
+        const progressEl = document.getElementById("progress-container");
+        if (progressEl) progressEl.style.display = "none";
+      },
+      (xhr) => {
+        console.log(`loading ${(xhr.loaded / xhr.total) * 100}%`);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+
+    // Resize handler
+    const handleResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+    window.addEventListener("resize", handleResize);
+
+    let animationId;
+    function animate() {
+      animationId = requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Cleanup
+    return () => {
+      if (animationId) cancelAnimationFrame(animationId);
+      window.removeEventListener("resize", handleResize);
+      controls.dispose();
+      renderer.dispose();
+      if (
+        mountRef.current &&
+        renderer.domElement.parentNode === mountRef.current
+      ) {
+        mountRef.current.removeChild(renderer.domElement);
+      }
+      scene.traverse((object) => {
+        if (object.geometry) object.geometry.dispose();
+        if (object.material) {
+          if (Array.isArray(object.material)) {
+            object.material.forEach((mat) => mat.dispose());
+          } else {
+            object.material.dispose();
+          }
+        }
+      });
+    };
+  }, []);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+      <div>
+        <h1
+          style={{
+            textAlign: "center",
+            fontSize: "2rem",
+            padding: "1rem 0",
+            color: "white",
+            background: "#222",
+          }}
+        >
+          3D Render
+        </h1>
+        <div className="border"></div>
+      </div>
+      <div
+        ref={mountRef}
+        style={{
+          flex: 1,
+          minHeight: 0,
+          minWidth: 0,
+          position: "relative",
+        }}
+      ></div>
+    </div>
+  );
+};
+
+export default Contact;
