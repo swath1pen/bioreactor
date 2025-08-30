@@ -7,99 +7,114 @@ const Contact = () => {
   const mountRef = useRef();
 
   useEffect(() => {
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setClearColor(0x000000);
-  renderer.setPixelRatio(window.devicePixelRatio);
-
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-  document.body.appendChild(renderer.domElement);
-
-  const scene = new THREE.Scene();
-
-  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-  camera.position.set(8, 7, 18);
-
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.enablePan = false;
-  controls.minDistance = 5;
-  controls.maxDistance = 20;
-  controls.minPolarAngle = 0.5;
-  controls.maxPolarAngle = 1.5;
-  controls.autoRotate = false;
-  controls.target = new THREE.Vector3(0, 2, 0);
-  controls.update();
-
-  const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
-  groundGeometry.rotateX(-Math.PI / 2);
-  const groundMaterial = new THREE.MeshStandardMaterial({
-    color: 0x555555,
-    side: THREE.DoubleSide
-  });
-  const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-  groundMesh.castShadow = false;
-  groundMesh.receiveShadow = true;
-  scene.add(groundMesh);
-
-  const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
-  spotLight.position.set(0, 25, 0);
-  spotLight.castShadow = true;
-  spotLight.shadow.bias = -0.0001;
-  scene.add(spotLight);
-
-  const loader = new GLTFLoader();
-  loader.load('scene.gltf', (gltf) => {
-    console.log('loading model');
-    const mesh = gltf.scene;
-
-    mesh.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-    // SCALE SMALLER: fit into 2.5 units (formerly 5)
-    const bbox = new THREE.Box3().setFromObject(mesh);
-    const size = bbox.getSize(new THREE.Vector3());
-    let scaleFactor = 1;
-    if (size.length() > 3) scaleFactor = 3 / size.length();
-    mesh.scale.setScalar(scaleFactor);
-    mesh.position.set(0, 1.05, 1);
-    scene.add(mesh);
-
-    document.getElementById('progress-container').style.display = 'none';
-  }, (xhr) => {
-    console.log(`loading ${xhr.loaded / xhr.total * 100}%`);
-  }, (error) => {
-    console.error(error);
-  });
-
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.setSize(window.innerWidth, window.innerHeight);
-  });
+    renderer.setClearColor(0x000000);
+    renderer.setPixelRatio(window.devicePixelRatio);
 
-  function animate() {
-    requestAnimationFrame(animate);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    // Instead of document.body, append to mountRef.current
+    mountRef.current.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(
+      45,
+      window.innerWidth / window.innerHeight,
+      1,
+      1000
+    );
+    camera.position.set(8, 7, 18);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.enablePan = false;
+    controls.minDistance = 5;
+    controls.maxDistance = 20;
+    controls.minPolarAngle = 0.5;
+    controls.maxPolarAngle = 1.5;
+    controls.autoRotate = false;
+    controls.target = new THREE.Vector3(0, 2, 0);
     controls.update();
-    renderer.render(scene, camera);
-  }
 
-  animate();
+    const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
+    groundGeometry.rotateX(-Math.PI / 2);
+    const groundMaterial = new THREE.MeshStandardMaterial({
+      color: 0x555555,
+      side: THREE.DoubleSide,
+    });
+    const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+    groundMesh.castShadow = false;
+    groundMesh.receiveShadow = true;
+    scene.add(groundMesh);
+
+    const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
+    spotLight.position.set(0, 25, 0);
+    spotLight.castShadow = true;
+    spotLight.shadow.bias = -0.0001;
+    scene.add(spotLight);
+
+    const loader = new GLTFLoader();
+    loader.load(
+      "scene.gltf",
+      (gltf) => {
+        console.log("loading model");
+        const mesh = gltf.scene;
+
+        mesh.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
+
+        const bbox = new THREE.Box3().setFromObject(mesh);
+        const size = bbox.getSize(new THREE.Vector3());
+        let scaleFactor = 1;
+        if (size.length() > 3) scaleFactor = 3 / size.length();
+        mesh.scale.setScalar(scaleFactor);
+        mesh.position.set(0, 1.05, 1);
+        scene.add(mesh);
+
+        const progressEl = document.getElementById("progress-container");
+        if (progressEl) progressEl.style.display = "none";
+      },
+      (xhr) => {
+        console.log(`loading ${(xhr.loaded / xhr.total) * 100}%`);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+
+    // Resize handler
+    const handleResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+    window.addEventListener("resize", handleResize);
+
+    let animationId;
+
+    function animate() {
+      animationId = requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    animate();
 
     // Cleanup
     return () => {
-      cancelAnimationId && cancelAnimationFrame(animationId);
-      window.removeEventListener('resize', handleResize);
+      if (animationId) cancelAnimationFrame(animationId);
+      window.removeEventListener("resize", handleResize);
       controls.dispose();
       renderer.dispose();
-      if (mountRef.current) {
+      if (mountRef.current && renderer.domElement.parentNode === mountRef.current) {
         mountRef.current.removeChild(renderer.domElement);
       }
       scene.traverse((object) => {
@@ -116,15 +131,17 @@ const Contact = () => {
   }, []);
 
   return (
-    <div style={{display: "flex", flexDirection: "column", height: "100vh"}}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <div>
-        <h1 style={{
-          textAlign: "center",
-          fontSize: "2rem",
-          padding: "1rem 0",
-          color: "white",
-          background: "#222"
-        }}>
+        <h1
+          style={{
+            textAlign: "center",
+            fontSize: "2rem",
+            padding: "1rem 0",
+            color: "white",
+            background: "#222",
+          }}
+        >
           3D Render
         </h1>
         <div className="border"></div>
@@ -135,9 +152,9 @@ const Contact = () => {
           flex: 1,
           minHeight: 0,
           minWidth: 0,
-          position: "relative"
-        }}>
-      </div>
+          position: "relative",
+        }}
+      ></div>
     </div>
   );
 };
