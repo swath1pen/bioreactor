@@ -31,16 +31,12 @@ const Contact = () => {
     controls.enablePan = false;
     controls.minDistance = 5;
     controls.maxDistance = 20;
-    // === Allow free rotation in ALL directions ===
     controls.minPolarAngle = 0;
     controls.maxPolarAngle = Math.PI;
     controls.autoRotate = false;
     controls.target = new THREE.Vector3(0, 2, 0);
     controls.update();
 
-    // === REMOVED GROUND ===
-
-    // Lighting (kept for visibility)
     const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
     spotLight.position.set(0, 25, 0);
     spotLight.castShadow = true;
@@ -51,7 +47,6 @@ const Contact = () => {
     loader.load(
       "scene.gltf",
       (gltf) => {
-        console.log("loading model");
         const mesh = gltf.scene;
         mesh.traverse((child) => {
           if (child.isMesh) {
@@ -66,19 +61,15 @@ const Contact = () => {
         mesh.scale.setScalar(scaleFactor);
         mesh.position.set(0, 1.05, 1);
         scene.add(mesh);
-
         const progressEl = document.getElementById("progress-container");
         if (progressEl) progressEl.style.display = "none";
       },
-      (xhr) => {
-        console.log(`loading ${(xhr.loaded / xhr.total) * 100}%`);
-      },
+      (xhr) => {},
       (error) => {
         console.error(error);
       }
     );
 
-    // Resize handler
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -92,7 +83,6 @@ const Contact = () => {
       controls.update();
       renderer.render(scene, camera);
     }
-
     animate();
 
     // Cleanup
@@ -120,19 +110,33 @@ const Contact = () => {
     };
   }, []);
 
+  // --- Improved Header Design ---
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <div>
-        <h1 style={{
-            textAlign: "center",
-            fontSize: "2rem",
-            padding: "1rem 0",
-            color: "white",
-            background: "#215",
-        }}>
+      <div
+        style={{
+          background: "linear-gradient(90deg, #142744 0%, #325adf 100%)",
+          borderRadius: "1.5rem 1.5rem 0 0",
+          boxShadow: "0 8px 24px rgba(30,40,90,0.12)",
+          textAlign: "center",
+          padding: "2.5rem 0 1.5rem 0",
+          margin: "0 1.5rem",
+          position: "relative",
+          top: "1rem",
+        }}
+      >
+        <h1
+          style={{
+            color: "#fafaff",
+            fontSize: "2.8rem",
+            letterSpacing: "0.12em",
+            fontWeight: 800,
+            textShadow: "0 2px 12px rgba(0,0,32,0.28)",
+            margin: 0,
+          }}
+        >
           3D Render
         </h1>
-        <div className="border"></div>
       </div>
       <div
         ref={mountRef}
@@ -146,3 +150,5 @@ const Contact = () => {
     </div>
   );
 };
+
+export default Contact;
