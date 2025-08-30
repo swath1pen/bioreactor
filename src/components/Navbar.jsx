@@ -43,7 +43,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
               to="/contact"
               className="text-gray-300 hover:text-white transition-colors"
             >
-              Model
+              3D Model
             </Link>
           </div>
         </div>
