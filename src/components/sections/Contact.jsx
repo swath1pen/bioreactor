@@ -4,9 +4,11 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 const Contact = () => {
-  const mountRef = useRef();
+  const mountRef = useRef(null);
 
   useEffect(() => {
+    if (!mountRef.current) return;
+
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -64,7 +66,7 @@ const Contact = () => {
         const progressEl = document.getElementById("progress-container");
         if (progressEl) progressEl.style.display = "none";
       },
-      (xhr) => {},
+      undefined,
       (error) => {
         console.error(error);
       }
@@ -75,6 +77,7 @@ const Contact = () => {
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     };
+
     window.addEventListener("resize", handleResize);
 
     let animationId;
@@ -91,10 +94,7 @@ const Contact = () => {
       window.removeEventListener("resize", handleResize);
       controls.dispose();
       renderer.dispose();
-      if (
-        mountRef.current &&
-        renderer.domElement.parentNode === mountRef.current
-      ) {
+      if (mountRef.current && renderer.domElement.parentNode === mountRef.current) {
         mountRef.current.removeChild(renderer.domElement);
       }
       scene.traverse((object) => {
@@ -110,8 +110,7 @@ const Contact = () => {
     };
   }, []);
 
-  return (
-  );
+  return <div ref={mountRef} style={{ width: '100vw', height: '100vh' }} />;
 };
 
 export default Contact;
