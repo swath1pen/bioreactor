@@ -64,10 +64,10 @@ export const Contact = () => {
     spotLight.shadow.bias = -0.0001;
     scene.add(spotLight);
 
-    // Loader
+    // Loader - use RELATIVE path (not /public) when in React!
     const loader = new GLTFLoader();
     loader.load(
-      "/public/scene.gltf", // Corrected: path must be from public root
+      "/scene.gltf", // Put your GLTF model in public/scene.gltf
       (gltf) => {
         const mesh = gltf.scene;
         mesh.traverse((child) => {
@@ -77,32 +77,40 @@ export const Contact = () => {
           }
         });
 
-        // --- Force visible size and position ---
-        mesh.scale.set(2, 2, 2); // Boost size (adjust if needed)
+        // Add to scene for bounding box calculation
         scene.add(mesh);
 
-        // Calculate bounding box and center:
+        // --- Auto-scale and center model ---
         const box = new THREE.Box3().setFromObject(mesh);
         const size = box.getSize(new THREE.Vector3());
         const center = box.getCenter(new THREE.Vector3());
 
-        // Reposition mesh to center it:
-        mesh.position.x += (mesh.position.x - center.x);
-        mesh.position.y += (mesh.position.y - center.y);
-        mesh.position.z += (mesh.position.z - center.z);
+        // Pick desired maximum dimension to fit scene
+        const maxModelSize = Math.max(size.x, size.y, size.z);
+        const desiredSize = 4; // Model largest dimension after scaling
+        const scale = desiredSize / maxModelSize;
 
-        // Adjust camera for full model view
-        const maxDim = Math.max(size.x, size.y, size.z);
-        camera.position.set(center.x + maxDim * 2, center.y + maxDim * 1.5, center.z + maxDim * 2.5);
-        camera.lookAt(center);
+        mesh.scale.set(scale, scale, scale);
 
-        // OrbitControls focus
-        controls.target.copy(center);
+        // Re-calculate for center after scaling
+        box.setFromObject(mesh);
+        box.getCenter(center);
+
+        // Move mesh so it's centered and sits just above ground
+        mesh.position.x += (0 - center.x);
+        mesh.position.y += (1 - center.y);
+        mesh.position.z += (0 - center.z);
+
+        // Camera and controls focus
+        camera.position.set(0, 4, 10);
+        camera.lookAt(0, 1, 0);
+        controls.target.set(0, 1, 0);
         controls.update();
 
-        // Debug info
-        console.log("Model center:", center);
-        console.log("Model size:", size);
+        // Debug
+        console.log("Model scale applied:", scale);
+        console.log("Model new center:", center);
+        console.log("Model new size:", box.getSize(new THREE.Vector3()));
 
         // Hide progress container if used
         const progress = document.getElementById("progress-container");
@@ -145,7 +153,7 @@ export const Contact = () => {
     };
   }, []);
 
-  // Be sure to render the mount ref div!
+  // Render the Three.js container
   return (
     <div ref={mountRef} style={{ width: "100vw", height: "100vh" }} />
   );
