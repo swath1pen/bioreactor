@@ -7,14 +7,7 @@ const Contact = () => {
   const mountRef = useRef();
 
   useEffect(() => {
-    let renderer, scene, camera, controls, animationId;
-
-    // Remove any leftover canvas
-    while (mountRef.current && mountRef.current.firstChild) {
-      mountRef.current.removeChild(mountRef.current.firstChild);
-    }
-
-    renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000);
@@ -23,9 +16,9 @@ const Contact = () => {
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     mountRef.current.appendChild(renderer.domElement);
 
-    scene = new THREE.Scene();
+    const scene = new THREE.Scene();
 
-    camera = new THREE.PerspectiveCamera(
+    const camera = new THREE.PerspectiveCamera(
       45,
       window.innerWidth / window.innerHeight,
       1,
@@ -33,7 +26,7 @@ const Contact = () => {
     );
     camera.position.set(4, 6, 11);
 
-    controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.enablePan = false;
     controls.minDistance = 5;
@@ -50,12 +43,11 @@ const Contact = () => {
     spotLight.shadow.bias = -0.0001;
     scene.add(spotLight);
 
-    let mesh;
     const loader = new GLTFLoader();
     loader.load(
       "scene.gltf",
       (gltf) => {
-        mesh = gltf.scene;
+        const mesh = gltf.scene;
         mesh.traverse((child) => {
           if (child.isMesh) {
             child.castShadow = true;
@@ -65,14 +57,14 @@ const Contact = () => {
         const bbox = new THREE.Box3().setFromObject(mesh);
         const size = bbox.getSize(new THREE.Vector3());
         let scaleFactor = 1;
-        if (size.length() > 3) scaleFactor = 6 / size.length();
+        if (size.length() > 3) scaleFactor = 3 / size.length();
         mesh.scale.setScalar(scaleFactor);
-        mesh.position.set(-3, 4.05, 1);
+        mesh.position.set(0, 1.05, 1);
         scene.add(mesh);
         const progressEl = document.getElementById("progress-container");
         if (progressEl) progressEl.style.display = "none";
       },
-      undefined,
+      (xhr) => {},
       (error) => {
         console.error(error);
       }
@@ -85,6 +77,7 @@ const Contact = () => {
     };
     window.addEventListener("resize", handleResize);
 
+    let animationId;
     function animate() {
       animationId = requestAnimationFrame(animate);
       controls.update();
@@ -104,9 +97,6 @@ const Contact = () => {
       ) {
         mountRef.current.removeChild(renderer.domElement);
       }
-      if (mesh && scene) {
-        scene.remove(mesh);
-      }
       scene.traverse((object) => {
         if (object.geometry) object.geometry.dispose();
         if (object.material) {
@@ -118,33 +108,9 @@ const Contact = () => {
         }
       });
     };
-  }, []); // only run on mount
+  }, []);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        background: "#111",
-        minHeight: "100vh"
-      }}
-    >
-      <div
-        ref={mountRef}
-        style={{
-          width: "800px",
-          height: "600px",
-          background: "#1a1a1a",
-          borderRadius: "24px",
-          boxShadow: "0 0 32px rgba(0,0,0,0.25)",
-          border: "4px solid #fff",
-          margin: "40px auto 24px auto",
-          overflow: "hidden",
-          position: "relative"
-        }}
-      />
-    </div>
   );
 };
 
