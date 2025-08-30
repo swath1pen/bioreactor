@@ -67,7 +67,7 @@ const Contact = () => {
     const bbox = new THREE.Box3().setFromObject(mesh);
     const size = bbox.getSize(new THREE.Vector3());
     let scaleFactor = 1;
-    if (size.length() > 2.5) scaleFactor = 2.5 / size.length();
+    if (size.length() > 3) scaleFactor = 3 / size.length();
     mesh.scale.setScalar(scaleFactor);
     mesh.position.set(0, 1.05, 1);
     scene.add(mesh);
