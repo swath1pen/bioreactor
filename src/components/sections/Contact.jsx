@@ -67,7 +67,7 @@ export const Contact = () => {
     // Loader
     const loader = new GLTFLoader();
     loader.load(
-      "/circle/scene.gltf", // Corrected: path must be from public root
+      "/scene.gltf", // Corrected: path must be from public root
       (gltf) => {
         const mesh = gltf.scene;
         mesh.traverse((child) => {
