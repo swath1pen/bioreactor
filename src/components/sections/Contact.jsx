@@ -24,7 +24,7 @@ const Contact = () => {
       1,
       1000
     );
-    camera.position.set(8, 7, 18);
+    camera.position.set(4, 6, 11);
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
