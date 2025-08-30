@@ -115,7 +115,3 @@ const Contact = () => {
 
 export default Contact;
 
-  return <div ref={mountRef} style={{ width: '100vw', height: '100vh' }} />;
-};
-
-export default Contact;
