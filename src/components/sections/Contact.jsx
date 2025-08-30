@@ -115,7 +115,7 @@ const Contact = () => {
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <div
         style={{
-          background: "linear-gradient(90deg, #142744 0%, #325adf 100%)",
+          background: "linear-gradient(90deg, #2A6D40 0%, #50c878 100%)",
           borderRadius: "1.5rem 1.5rem 0 0",
           boxShadow: "0 8px 24px rgba(30,40,90,0.12)",
           textAlign: "center",
