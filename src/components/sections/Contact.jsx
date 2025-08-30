@@ -17,10 +17,14 @@ const Contact = () => {
     renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     // Mount renderer
-    mountRef.current.appendChild(renderer.domElement);
+    if (mountRef.current) {
+      mountRef.current.appendChild(renderer.domElement);
+    }
 
-    // Scene and camera
+    // Scene
     const scene = new THREE.Scene();
+
+    // Camera
     const camera = new THREE.PerspectiveCamera(
       45,
       window.innerWidth / window.innerHeight,
@@ -63,7 +67,7 @@ const Contact = () => {
     // Model loader
     const loader = new GLTFLoader();
     loader.load(
-      "/scene.gltf", // Place scene.gltf in public/ directory
+      "/scene.gltf", // Place scene.gltf in your public/ directory
       (gltf) => {
         const mesh = gltf.scene;
         mesh.traverse((child) => {
@@ -74,7 +78,6 @@ const Contact = () => {
         });
         mesh.position.set(0, 1.05, -1);
         scene.add(mesh);
-        // Optionally hide some progress message here
       },
       undefined,
       (error) => {
@@ -91,8 +94,9 @@ const Contact = () => {
     window.addEventListener("resize", handleResize);
 
     // Animation loop
+    let animationId;
     const animate = () => {
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
       controls.update();
       renderer.render(scene, camera);
     };
@@ -100,9 +104,25 @@ const Contact = () => {
 
     // Cleanup
     return () => {
-      renderer.dispose();
-      mountRef.current.removeChild(renderer.domElement);
+      cancelAnimationFrame(animationId);
       window.removeEventListener("resize", handleResize);
+      controls.dispose();
+      renderer.dispose();
+      // Remove renderer DOM element from mountRef
+      if (mountRef.current) {
+        mountRef.current.removeChild(renderer.domElement);
+      }
+      // Dispose scene children
+      scene.traverse((object) => {
+        if (object.geometry) object.geometry.dispose();
+        if (object.material) {
+          if (Array.isArray(object.material)) {
+            object.material.forEach((mat) => mat.dispose());
+          } else {
+            object.material.dispose();
+          }
+        }
+      });
     };
   }, []);
 
@@ -110,11 +130,12 @@ const Contact = () => {
     <div>
       <h1>3D Render</h1>
       <div className="border"></div>
-      <div ref={mountRef}></div>
+      <div ref={mountRef} style={{ width: "100vw", height: "100vh" }}></div>
     </div>
   );
 };
 
 export default Contact;
+
 
 
