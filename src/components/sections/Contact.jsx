@@ -129,12 +129,10 @@ const Contact = () => {
             fontSize: "2rem",
             padding: "1rem 0",
             color: "white",
-            background: "#222",
+            background: "#215",
           }}
         >
           3D Render
-        </h1>
-        <div className="border"></div>
       </div>
       <div
         ref={mountRef}
