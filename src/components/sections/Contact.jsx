@@ -5,7 +5,6 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 const Contact = () => {
   const mountRef = useRef();
-
   useEffect(() => {
     // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -15,29 +14,30 @@ const Contact = () => {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+
     if (mountRef.current) mountRef.current.appendChild(renderer.domElement);
 
     // Scene
     const scene = new THREE.Scene();
 
-    // Camera (matching your working FOV and position)
+    // Camera: move farther away
     const camera = new THREE.PerspectiveCamera(
       95,
       window.innerWidth / window.innerHeight,
       1,
       10000
     );
-    camera.position.set(0, 4, 10);
+    camera.position.set(0, 4, 50); // Z is now 50 instead of 10
 
-    // Controls
+    // Controls: allow more zoom out if desired
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.enablePan = true;
-    controls.minDistance = 2;
-    controls.maxDistance = 100;
+    controls.minDistance = 10;    // Prevent getting too close if model is huge
+    controls.maxDistance = 1000;  // Allow zooming way out
     controls.minPolarAngle = 0;
     controls.maxPolarAngle = Math.PI;
-    controls.autoRotate = false; // Set true for auto
+    controls.autoRotate = false;
     controls.target.set(0, 1, 0);
     controls.update();
 
@@ -50,11 +50,12 @@ const Contact = () => {
 
     // Model Loader - match vanilla
     const loader = new GLTFLoader();
-    loader.load("/scene.gltf", (gltf) => {scene.add(gltf.scene);
+    loader.load("/scene.gltf", (gltf) => {
+      scene.add(gltf.scene);
     }, undefined, (error) => {
-    console.error("GLTFLoader error:", error);
+      console.error("GLTFLoader error:", error);
     });
-    
+
     // Resize
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -93,7 +94,6 @@ const Contact = () => {
       });
     };
   }, []);
-
   return (
     <div>
       <h1>3D Render</h1>
@@ -102,7 +102,6 @@ const Contact = () => {
     </div>
   );
 };
-
 export default Contact;
 
 
