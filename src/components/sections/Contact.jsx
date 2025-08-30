@@ -63,8 +63,13 @@ const Contact = () => {
         child.receiveShadow = true;
       }
     });
-
-    mesh.position.set(0, 1.05, -1);
+    // SCALE SMALLER: fit into 2.5 units (formerly 5)
+    const bbox = new THREE.Box3().setFromObject(mesh);
+    const size = bbox.getSize(new THREE.Vector3());
+    let scaleFactor = 1;
+    if (size.length() > 2.5) scaleFactor = 2.5 / size.length();
+    mesh.scale.setScalar(scaleFactor);
+    mesh.position.set(0, 1.05, 1);
     scene.add(mesh);
 
     document.getElementById('progress-container').style.display = 'none';
