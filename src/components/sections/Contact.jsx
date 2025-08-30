@@ -5,62 +5,85 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 const Contact = () => {
   const mountRef = useRef();
+
   useEffect(() => {
-    // Renderer
+    // Create renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000);
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    // Insert canvas into mountRef div (not document.body!)
     if (mountRef.current) mountRef.current.appendChild(renderer.domElement);
 
-    // Scene
+    // Scene setup
     const scene = new THREE.Scene();
 
-    // Camera: farther away
+    // Camera
     const camera = new THREE.PerspectiveCamera(
-      95,
+      45,
       window.innerWidth / window.innerHeight,
       1,
-      10000
+      1000
     );
-    camera.position.set(0, 4, 50);
+    camera.position.set(4, 5, 11);
 
-    // Controls: wide zoom range
+    // Controls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.enablePan = true;
-    controls.minDistance = 10;
-    controls.maxDistance = 1000;
-    controls.minPolarAngle = 0;
-    controls.maxPolarAngle = Math.PI;
+    controls.enablePan = false;
+    controls.minDistance = 5;
+    controls.maxDistance = 20;
+    controls.minPolarAngle = 0.5;
+    controls.maxPolarAngle = 1.5;
     controls.autoRotate = false;
-    controls.target.set(0, 1, 0);
+    controls.target = new THREE.Vector3(0, 1, 0);
     controls.update();
 
-    // **Stronger Lighting**
-    // Powerful SpotLight
-    const spotLight = new THREE.SpotLight(0xffffff, 8000, 200, 0.22, 1);
-    spotLight.position.set(0, 60, 0);   // Higher and stronger
+    // Ground (remove this whole block if you want a floating model!)
+    const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
+    groundGeometry.rotateX(-Math.PI / 2);
+    const groundMaterial = new THREE.MeshStandardMaterial({
+      color: 0x555555,
+      side: THREE.DoubleSide,
+    });
+    const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+    groundMesh.castShadow = false;
+    groundMesh.receiveShadow = true;
+    scene.add(groundMesh);
+
+    // SpotLight
+    const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
+    spotLight.position.set(0, 25, 0);
     spotLight.castShadow = true;
     spotLight.shadow.bias = -0.0001;
     scene.add(spotLight);
 
-    // Bright AmbientLight (adds global brightness, no shadows)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2.5);
-    scene.add(ambientLight);
-
-    // Model Loader - fix loader path!
+    // Model Loader (React/Vite: don't use .setPath('public/'), just "/scene.gltf")
     const loader = new GLTFLoader();
-    loader.load("/public/scene.gltf", (gltf) => {
-      scene.add(gltf.scene);
-    }, undefined, (error) => {
-      console.error("GLTFLoader error:", error);
-    });
+    loader.load(
+      "/scene.gltf",
+      (gltf) => {
+        const mesh = gltf.scene;
+        mesh.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
+        mesh.position.set(0, 1.05, -1);
+        scene.add(mesh);
+      },
+      undefined,
+      (error) => {
+        console.error("GLTFLoader error:", error);
+      }
+    );
 
-    // Resize
+    // Resize handler
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -68,7 +91,7 @@ const Contact = () => {
     };
     window.addEventListener("resize", handleResize);
 
-    // Animate
+    // Animation loop
     let animationId;
     const animate = () => {
       animationId = requestAnimationFrame(animate);
@@ -103,10 +126,10 @@ const Contact = () => {
     <div>
       <h1>3D Render</h1>
       <div className="border"></div>
+      {/* React mount point! */}
       <div ref={mountRef} style={{ width: "100vw", height: "100vh" }}></div>
     </div>
   );
 };
 
 export default Contact;
-
