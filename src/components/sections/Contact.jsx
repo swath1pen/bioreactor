@@ -50,46 +50,11 @@ const Contact = () => {
 
     // Model Loader - match vanilla
     const loader = new GLTFLoader();
-    loader.load(
-      "/public/scene.gltf", // React projects must use / at the root; public/scene.gltf in filesystem
-      (gltf) => {
-        const mesh = gltf.scene;
-        mesh.traverse((child) => {
-          if (child.isMesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
-          }
-        });
-        scene.add(mesh);
-
-        // Auto-scale and center model, as in your vanilla
-        const box = new THREE.Box3().setFromObject(mesh);
-        const size = box.getSize(new THREE.Vector3());
-        const center = box.getCenter(new THREE.Vector3());
-        const desiredSize = 9;
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = desiredSize / maxDim;
-        mesh.scale.set(scale, scale, scale);
-
-        // Re-center after scaling
-        box.setFromObject(mesh);
-        box.getCenter(center);
-        mesh.position.x += (0 - center.x);
-        mesh.position.y += (1 - center.y);
-        mesh.position.z += (0 - center.z);
-
-        // Camera and controls
-        camera.position.set(0, 4, 10);
-        camera.lookAt(0, 1, 0);
-        controls.target.set(0, 1, 0);
-        controls.update();
-      },
-      undefined,
-      (error) => {
-        console.error("GLTFLoader error:", error);
-      }
-    );
-
+    loader.load("/scene.gltf", (gltf) => {scene.add(gltf.scene);
+    }, undefined, (error) => {
+    console.error("GLTFLoader error:", error);
+    });
+    
     // Resize
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
