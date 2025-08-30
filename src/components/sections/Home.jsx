@@ -1,23 +1,30 @@
 import { RevealOnScroll } from "../RevealOnScroll";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { useRef } from "react";
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 
-// Rotating cube component
-function RotatingCube() {
-  const cubeRef = useRef();
+// Rotating STL model component, scaled smaller
+function RotatingSTL() {
+  const meshRef = useRef();
+  const geometry = useLoader(STLLoader, "/bioreactor.stl"); // STL file in public dir
 
   useFrame(() => {
-    if (cubeRef.current) {
-      cubeRef.current.rotation.x += 0.01;
-      cubeRef.current.rotation.y += 0.01;
+    if (meshRef.current) {
+      meshRef.current.rotation.x += 0.01;
+      meshRef.current.rotation.y += 0.01;
     }
   });
 
   return (
-    <mesh ref={cubeRef}>
-      <boxGeometry args={[2, 2, 2]} />
-      <meshStandardMaterial color="#10b981" />
+    <mesh
+      ref={meshRef}
+      geometry={geometry}
+      scale={0.1} // Make object smaller; adjust as needed
+      castShadow
+      receiveShadow
+    >
+      <meshStandardMaterial color="#8bf3d0ff" />
     </mesh>
   );
 }
@@ -42,7 +49,7 @@ export const Home = () => {
             <Canvas camera={{ position: [0, 0, 6] }}>
               <ambientLight intensity={0.9} />
               <directionalLight position={[2, 2, 5]} />
-              <RotatingCube />
+              <RotatingSTL />
               <OrbitControls />
             </Canvas>
           </div>
