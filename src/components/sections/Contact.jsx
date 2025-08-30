@@ -7,92 +7,100 @@ const Contact = () => {
   const mountRef = useRef();
 
   useEffect(() => {
-    // Create renderer
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.setClearColor(0x000000);
+    renderer.setPixelRatio(window.devicePixelRatio);
 
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setClearColor(0x000000);
-  renderer.setPixelRatio(window.devicePixelRatio);
+    // We'll set size later based on the container size.
 
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    if (mountRef.current) mountRef.current.appendChild(renderer.domElement);
 
-  document.body.appendChild(renderer.domElement);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 1, 1000); // aspect set below
+    camera.position.set(4, 5, 11);
 
-  const scene = new THREE.Scene();
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.enablePan = false;
+    controls.minDistance = 5;
+    controls.maxDistance = 20;
+    controls.minPolarAngle = 0.5;
+    controls.maxPolarAngle = 1.5;
+    controls.autoRotate = false;
+    controls.target = new THREE.Vector3(0, 1, 0);
+    controls.update();
 
-  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-  camera.position.set(4, 5, 11);
+    // Lighting, ground, etc. (same as before, or edit as desired...)
 
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.enablePan = false;
-  controls.minDistance = 5;
-  controls.maxDistance = 20;
-  controls.minPolarAngle = 0.5;
-  controls.maxPolarAngle = 1.5;
-  controls.autoRotate = false;
-  controls.target = new THREE.Vector3(0, 1, 0);
-  controls.update();
+    // SpotLight
+    const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
+    spotLight.position.set(0, 25, 0);
+    spotLight.castShadow = true;
+    spotLight.shadow.bias = -0.0001;
+    scene.add(spotLight);
 
-  const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
-  groundGeometry.rotateX(-Math.PI / 2);
-  const groundMaterial = new THREE.MeshStandardMaterial({
-    color: 0x555555,
-    side: THREE.DoubleSide
-  });
-  const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-  groundMesh.castShadow = false;
-  groundMesh.receiveShadow = true;
-  scene.add(groundMesh);
+    // (Optional) AmbientLight makes everything a bit brighter:
+    // const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+    // scene.add(ambientLight);
 
-  const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
-  spotLight.position.set(0, 25, 0);
-  spotLight.castShadow = true;
-  spotLight.shadow.bias = -0.0001;
-  scene.add(spotLight);
+    // Model Loader, with centering and scaling
+    const loader = new GLTFLoader();
+    loader.load('/scene.gltf', (gltf) => {
+      const model = gltf.scene;
+      // Center and scale
+      const box = new THREE.Box3().setFromObject(model);
+      const size = box.getSize(new THREE.Vector3());
+      const center = box.getCenter(new THREE.Vector3());
 
-  const loader = new GLTFLoader().setPath('public/');
-  loader.load('scene.gltf', (gltf) => {
-    console.log('loading model');
-    const mesh = gltf.scene;
+      model.position.x += (0 - center.x);
+      model.position.y += (1 - center.y);
+      model.position.z += (0 - center.z);
 
-    mesh.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const desiredSize = 3;
+      if (maxDim > 0) {
+        const scale = desiredSize / maxDim;
+        model.scale.set(scale, scale, scale);
       }
+
+      model.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+
+      scene.add(model);
+    }, undefined, (error) => {
+      console.error(error);
     });
 
-    mesh.position.set(0, 1.05, -1);
-    scene.add(mesh);
+    // Resize handler - fit canvas to container div, keep correct aspect
+    const handleResize = () => {
+      if (!mountRef.current) return;
+      const width = mountRef.current.clientWidth;
+      const height = mountRef.current.clientHeight;
+      renderer.setSize(width, height, false);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    };
+    window.addEventListener('resize', handleResize);
+    setTimeout(handleResize, 10); // Ensure fit after render
 
-    document.getElementById('progress-container').style.display = 'none';
-  }, (xhr) => {
-    console.log(`loading ${xhr.loaded / xhr.total * 100}%`);
-  }, (error) => {
-    console.error(error);
-  });
-
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-
-  function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
-  }
-
-  animate();
+    // Animate
+    let animationId;
+    const animate = () => {
+      animationId = requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    animate();
 
     // Cleanup
     return () => {
-      cancelAnimationFrame(animationId);
-      window.removeEventListener("resize", handleResize);
+      cancelAnimationId && cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', handleResize);
       controls.dispose();
       renderer.dispose();
       if (mountRef.current) {
@@ -112,11 +120,28 @@ const Contact = () => {
   }, []);
 
   return (
-    <div>
-      <h1>3D Render</h1>
-      <div className="border"></div>
-      {/* React mount point! */}
-      <div ref={mountRef} style={{ width: "100vw", height: "100vh" }}></div>
+    <div style={{display: "flex", flexDirection: "column", height: "100vh"}}>
+      <div>
+        <h1 style={{
+          textAlign: "center",
+          fontSize: "2rem",
+          padding: "1rem 0",
+          color: "white",
+          background: "#222"
+        }}>
+          3D Render
+        </h1>
+        <div className="border"></div>
+      </div>
+      <div
+        ref={mountRef}
+        style={{
+          flex: 1,
+          minHeight: 0,
+          minWidth: 0,
+          position: "relative"
+        }}>
+      </div>
     </div>
   );
 };
