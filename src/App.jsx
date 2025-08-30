@@ -8,7 +8,7 @@ import { Home } from "./components/sections/Home";
 import { About } from "./components/sections/About";
 import { Projects } from "./components/sections/Projects";
 import "./index.css";
-import { Contact } from "./components/sections/Contact";
+import  Contact  from "./components/sections/Contact";
 
 // Helper component for main sections on home tab
 function MainContent({ menuOpen, setMenuOpen }) {
