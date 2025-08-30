@@ -50,7 +50,7 @@ const Contact = () => {
 
     // Model Loader - match vanilla
     const loader = new GLTFLoader();
-    loader.load("/scene.gltf", (gltf) => {
+    loader.load("/public/scene.gltf", (gltf) => {
       scene.add(gltf.scene);
     }, undefined, (error) => {
       console.error("GLTFLoader error:", error);
