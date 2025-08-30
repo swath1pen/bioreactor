@@ -75,7 +75,7 @@ export const About = () => {
                     GitHub Repo{" "}
                   </h4>
                   <p>
-                    Link to design files and WebApp.
+                    Links to design files protocols.
                   </p>
                 </div>
                 <div>
