@@ -123,16 +123,16 @@ const Contact = () => {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <div>
-        <h1
-          style={{
+        <h1 style={{
             textAlign: "center",
             fontSize: "2rem",
             padding: "1rem 0",
             color: "white",
             background: "#215",
-          }}
-        >
+        }}>
           3D Render
+        </h1>
+        <div className="border"></div>
       </div>
       <div
         ref={mountRef}
@@ -146,5 +146,3 @@ const Contact = () => {
     </div>
   );
 };
-
-export default Contact;
