@@ -12,14 +12,9 @@ const Contact = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setClearColor(0x000000);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-    // Mount renderer
-    if (mountRef.current) {
-      mountRef.current.appendChild(renderer.domElement);
-    }
+    if (mountRef.current) mountRef.current.appendChild(renderer.domElement);
 
     // Scene
     const scene = new THREE.Scene();
@@ -31,61 +26,63 @@ const Contact = () => {
       1,
       1000
     );
-    camera.position.set(4, 5, 11);
+    camera.position.set(0, 0, 5);
 
-    // Controls
+    // Orbit Controls with auto-rotation
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.enablePan = false;
-    controls.minDistance = 5;
-    controls.maxDistance = 20;
-    controls.minPolarAngle = 0.5;
-    controls.maxPolarAngle = 1.5;
-    controls.autoRotate = false;
-    controls.target = new THREE.Vector3(0, 1, 0);
+    controls.enablePan = true;
+    controls.minDistance = 2;
+    controls.maxDistance = 50;
+    controls.minPolarAngle = 0;
+    controls.maxPolarAngle = Math.PI;
+    controls.autoRotate = true;              // <<< Enable auto-rotation
+    controls.autoRotateSpeed = 1.0;          // Adjust rotation speed
+    controls.target.set(0, 0, 0);
     controls.update();
 
-    // Ground
-    const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
-    groundGeometry.rotateX(-Math.PI / 2);
-    const groundMaterial = new THREE.MeshStandardMaterial({
-      color: 0x555555,
-      side: THREE.DoubleSide,
-    });
-    const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-    groundMesh.castShadow = false;
-    groundMesh.receiveShadow = true;
-    scene.add(groundMesh);
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    scene.add(ambientLight);
 
-    // Spot light
-    const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
-    spotLight.position.set(0, 25, 0);
-    spotLight.castShadow = true;
-    spotLight.shadow.bias = -0.0001;
-    scene.add(spotLight);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    dirLight.position.set(5, 10, 7.5);
+    scene.add(dirLight);
 
-    // Model loader
+    // Model loader, auto-center & scale, reference holder for rotation
+    let modelRef = null;
     const loader = new GLTFLoader();
     loader.load(
-      "/scene.gltf", // Place scene.gltf in your public/ directory
+      "/scene.gltf",
       (gltf) => {
-        const mesh = gltf.scene;
-        mesh.traverse((child) => {
-          if (child.isMesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
-          }
-        });
-        mesh.position.set(0, 1.05, -1);
-        scene.add(mesh);
+        const model = gltf.scene;
+
+        // Center and scale
+        const box = new THREE.Box3().setFromObject(model);
+        const size = new THREE.Vector3();
+        box.getSize(size);
+        const center = new THREE.Vector3();
+        box.getCenter(center);
+
+        model.position.x += (model.position.x - center.x);
+        model.position.y += (model.position.y - center.y);
+        model.position.z += (model.position.z - center.z);
+
+        const maxDimension = Math.max(size.x, size.y, size.z);
+        if (maxDimension > 0) {
+          model.scale.multiplyScalar(2.2 / maxDimension);
+        }
+
+        scene.add(model);
+        modelRef = model; // Save reference
       },
       undefined,
       (error) => {
-        console.error(error);
+        console.error("GLTFLoader error:", error);
       }
     );
 
-    // Resize handler
+    // Handle resize
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -97,6 +94,12 @@ const Contact = () => {
     let animationId;
     const animate = () => {
       animationId = requestAnimationFrame(animate);
+
+      // Optionally: Rotate model itself for double auto-rotation
+      // if (modelRef) {
+      //   modelRef.rotation.y += 0.01;
+      // }
+
       controls.update();
       renderer.render(scene, camera);
     };
@@ -108,11 +111,9 @@ const Contact = () => {
       window.removeEventListener("resize", handleResize);
       controls.dispose();
       renderer.dispose();
-      // Remove renderer DOM element from mountRef
       if (mountRef.current) {
         mountRef.current.removeChild(renderer.domElement);
       }
-      // Dispose scene children
       scene.traverse((object) => {
         if (object.geometry) object.geometry.dispose();
         if (object.material) {
@@ -136,6 +137,7 @@ const Contact = () => {
 };
 
 export default Contact;
+
 
 
 
