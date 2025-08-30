@@ -10,18 +10,6 @@ import { Projects } from "./components/sections/Projects";
 import "./index.css";
 import { Contact } from "./components/sections/Contact";
 
-function MainContent({ menuOpen, setMenuOpen }) {
-  return (
-    <>
-      <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <Home />
-      <About />
-      <Projects />
-    </>
-  );
-}
-
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -34,6 +22,11 @@ function App() {
           isLoaded ? "opacity-100" : "opacity-0"
         } bg-black text-gray-100`}
       >
+        <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+        <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+        <Home />
+        <About />
+        <Projects />
         <Router>
           <Routes>
             <Route
