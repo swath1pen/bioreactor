@@ -47,7 +47,7 @@ const Contact = () => {
 
     const loader = new GLTFLoader();
     loader.load(
-      "scene.gltf",
+      "scene1.gltf",
       (gltf) => {
         const mesh = gltf.scene;
         mesh.traverse((child) => {
