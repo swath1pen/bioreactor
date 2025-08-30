@@ -7,135 +7,91 @@ const Contact = () => {
   const mountRef = useRef();
 
   useEffect(() => {
-    // Create renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    document.body.appendChild(renderer.domElement);
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-    // Create scene & camera
-    const scene = new THREE.Scene();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000);
+  renderer.setPixelRatio(window.devicePixelRatio);
 
-    // MOBILE ADAPTIVE CAMERA SETTINGS
-    const isMobile = window.innerWidth < 600;
-    const camera = new THREE.PerspectiveCamera(
-      45,
-      window.innerWidth / window.innerHeight,
-      1,
-      1000
-    );
-    if (isMobile) {
-      camera.position.set(8, 14, 24); // further and higher for small screens
-    } else {
-      camera.position.set(8, 7, 18);
-    }
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    // OrbitControls
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.enablePan = false;
-    controls.autoRotate = false;
-    if (isMobile) {
-      controls.minDistance = 12;
-      controls.maxDistance = 40;
-    } else {
-      controls.minDistance = 7;
-      controls.maxDistance = 30;
-    }
-    controls.minPolarAngle = 0.5;
-    controls.maxPolarAngle = 1.5;
+  document.body.appendChild(renderer.domElement);
 
-    // Add ground
-    const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
-    groundGeometry.rotateX(-Math.PI / 2);
-    const groundMaterial = new THREE.MeshStandardMaterial({
-      color: 0x555555,
-      side: THREE.DoubleSide
-    });
-    const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-    groundMesh.castShadow = false;
-    groundMesh.receiveShadow = true;
-    scene.add(groundMesh);
+  const scene = new THREE.Scene();
 
-    // Light
-    const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
-    spotLight.position.set(0, 25, 0);
-    spotLight.castShadow = true;
-    spotLight.shadow.bias = -0.0001;
-    scene.add(spotLight);
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+  camera.position.set(18, 9, 24);
 
-    // LOAD GLTF MODEL, AUTO SCALE & CENTER
-    const loader = new GLTFLoader().setPath("public/");
-    loader.load(
-      "scene.gltf",
-      (gltf) => {
-        const mesh = gltf.scene;
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.enablePan = false;
+  controls.minDistance = 5;
+  controls.maxDistance = 20;
+  controls.minPolarAngle = 0.5;
+  controls.maxPolarAngle = 1.5;
+  controls.autoRotate = false;
+  controls.target = new THREE.Vector3(0, 2, 0);
+  controls.update();
 
-        // Enable shadows for meshes
-        mesh.traverse((child) => {
-          if (child.isMesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
-          }
-        });
+  const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
+  groundGeometry.rotateX(-Math.PI / 2);
+  const groundMaterial = new THREE.MeshStandardMaterial({
+    color: 0x555555,
+    side: THREE.DoubleSide
+  });
+  const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+  groundMesh.castShadow = false;
+  groundMesh.receiveShadow = true;
+  scene.add(groundMesh);
 
-        // AUTO-SCALE TO FIT
-        const bbox = new THREE.Box3().setFromObject(mesh);
-        const size = bbox.getSize(new THREE.Vector3());
-        let scaleFactor = 1;
-        if (size.length() > 5) scaleFactor = 5 / size.length(); // keep model within 5 units
-        mesh.scale.setScalar(scaleFactor);
+  const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
+  spotLight.position.set(0, 25, 0);
+  spotLight.castShadow = true;
+  spotLight.shadow.bias = -0.0001;
+  scene.add(spotLight);
 
-        // CENTER MODEL
-        bbox.setFromObject(mesh);
-        const center = bbox.getCenter(new THREE.Vector3());
-        mesh.position.sub(center); // center at origin (0,0,0)
+  const loader = new GLTFLoader().setPath('public/');
+  loader.load('scene.gltf', (gltf) => {
+    console.log('loading model');
+    const mesh = gltf.scene;
 
-        scene.add(mesh);
-
-        // Reset camera controls to point at model center
-        controls.target.set(0, 0, 0);
-        controls.update();
-
-        // Hide any loading UI
-        const progressEl = document.getElementById("progress-container");
-        if (progressEl) progressEl.style.display = "none";
-      },
-      (xhr) => {
-        // Optionally: loading progress
-        console.log(`loading ${(xhr.loaded / xhr.total) * 100}%`);
-      },
-      (error) => {
-        console.error(error);
+    mesh.traverse((child) => {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
       }
-    );
+    });
 
-    // Responsive resize
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      controls.update();
-    };
-    window.addEventListener("resize", handleResize);
+    mesh.position.set(0, 1.05, -1);
+    scene.add(mesh);
 
-    // Animation loop
-    let animationId;
-    const animate = () => {
-      animationId = requestAnimationFrame(animate);
-      controls.update();
-      renderer.render(scene, camera);
-    };
-    animate();
+    document.getElementById('progress-container').style.display = 'none';
+  }, (xhr) => {
+    console.log(`loading ${xhr.loaded / xhr.total * 100}%`);
+  }, (error) => {
+    console.error(error);
+  });
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  animate();
 
     // Cleanup
     return () => {
-      if (animationId) cancelAnimationFrame(animationId);
-      window.removeEventListener("resize", handleResize);
+      cancelAnimationId && cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', handleResize);
       controls.dispose();
       renderer.dispose();
       if (mountRef.current) {
@@ -155,19 +111,15 @@ const Contact = () => {
   }, []);
 
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", height: "100vh" }}
-    >
+    <div style={{display: "flex", flexDirection: "column", height: "100vh"}}>
       <div>
-        <h1
-          style={{
-            textAlign: "center",
-            fontSize: "2rem",
-            padding: "1rem 0",
-            color: "white",
-            background: "#222"
-          }}
-        >
+        <h1 style={{
+          textAlign: "center",
+          fontSize: "2rem",
+          padding: "1rem 0",
+          color: "white",
+          background: "#222"
+        }}>
           3D Render
         </h1>
         <div className="border"></div>
@@ -179,8 +131,8 @@ const Contact = () => {
           minHeight: 0,
           minWidth: 0,
           position: "relative"
-        }}
-      ></div>
+        }}>
+      </div>
     </div>
   );
 };
