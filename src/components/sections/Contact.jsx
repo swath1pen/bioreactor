@@ -8,97 +8,86 @@ const Contact = () => {
 
   useEffect(() => {
     // Create renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-    // Insert canvas into mountRef div (not document.body!)
-    if (mountRef.current) mountRef.current.appendChild(renderer.domElement);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000);
+  renderer.setPixelRatio(window.devicePixelRatio);
 
-    // Scene setup
-    const scene = new THREE.Scene();
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    // Camera
-    const camera = new THREE.PerspectiveCamera(
-      45,
-      window.innerWidth / window.innerHeight,
-      1,
-      1000
-    );
-    camera.position.set(4, 5, 11);
+  document.body.appendChild(renderer.domElement);
 
-    // Controls
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.enablePan = false;
-    controls.minDistance = 5;
-    controls.maxDistance = 20;
-    controls.minPolarAngle = 0.5;
-    controls.maxPolarAngle = 1.5;
-    controls.autoRotate = false;
-    controls.target = new THREE.Vector3(0, 1, 0);
-    controls.update();
+  const scene = new THREE.Scene();
 
-    // Ground (remove this whole block if you want a floating model!)
-    const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
-    groundGeometry.rotateX(-Math.PI / 2);
-    const groundMaterial = new THREE.MeshStandardMaterial({
-      color: 0x555555,
-      side: THREE.DoubleSide,
-    });
-    const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-    groundMesh.castShadow = false;
-    groundMesh.receiveShadow = true;
-    scene.add(groundMesh);
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+  camera.position.set(4, 5, 11);
 
-    // SpotLight
-    const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
-    spotLight.position.set(0, 25, 0);
-    spotLight.castShadow = true;
-    spotLight.shadow.bias = -0.0001;
-    scene.add(spotLight);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.enablePan = false;
+  controls.minDistance = 5;
+  controls.maxDistance = 20;
+  controls.minPolarAngle = 0.5;
+  controls.maxPolarAngle = 1.5;
+  controls.autoRotate = false;
+  controls.target = new THREE.Vector3(0, 1, 0);
+  controls.update();
 
-    // Model Loader (React/Vite: don't use .setPath('public/'), just "/scene.gltf")
-    const loader = new GLTFLoader();
-    loader.load(
-      "/scene.gltf",
-      (gltf) => {
-        const mesh = gltf.scene;
-        mesh.traverse((child) => {
-          if (child.isMesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
-          }
-        });
-        mesh.position.set(0, 1.05, -1);
-        scene.add(mesh);
-      },
-      undefined,
-      (error) => {
-        console.error("GLTFLoader error:", error);
+  const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
+  groundGeometry.rotateX(-Math.PI / 2);
+  const groundMaterial = new THREE.MeshStandardMaterial({
+    color: 0x555555,
+    side: THREE.DoubleSide
+  });
+  const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+  groundMesh.castShadow = false;
+  groundMesh.receiveShadow = true;
+  scene.add(groundMesh);
+
+  const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
+  spotLight.position.set(0, 25, 0);
+  spotLight.castShadow = true;
+  spotLight.shadow.bias = -0.0001;
+  scene.add(spotLight);
+
+  const loader = new GLTFLoader().setPath('public/');
+  loader.load('scene.gltf', (gltf) => {
+    console.log('loading model');
+    const mesh = gltf.scene;
+
+    mesh.traverse((child) => {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
       }
-    );
+    });
 
-    // Resize handler
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-    window.addEventListener("resize", handleResize);
+    mesh.position.set(0, 1.05, -1);
+    scene.add(mesh);
 
-    // Animation loop
-    let animationId;
-    const animate = () => {
-      animationId = requestAnimationFrame(animate);
-      controls.update();
-      renderer.render(scene, camera);
-    };
-    animate();
+    document.getElementById('progress-container').style.display = 'none';
+  }, (xhr) => {
+    console.log(`loading ${xhr.loaded / xhr.total * 100}%`);
+  }, (error) => {
+    console.error(error);
+  });
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  animate();
 
     // Cleanup
     return () => {
