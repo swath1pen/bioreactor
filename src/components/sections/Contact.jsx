@@ -51,7 +51,7 @@ const Contact = () => {
     // Model Loader - match vanilla
     const loader = new GLTFLoader();
     loader.load(
-      "/scene.gltf", // React projects must use / at the root; public/scene.gltf in filesystem
+      "/public/scene.gltf", // React projects must use / at the root; public/scene.gltf in filesystem
       (gltf) => {
         const mesh = gltf.scene;
         mesh.traverse((child) => {
