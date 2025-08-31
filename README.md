@@ -35,7 +35,7 @@ https://threejs.org/editor/
 
 8. **Change github page name name in main/package.json**
    - Edit line 3.
-   - 
+     
 9. **Change github page name name in main/index.html**
    - Edit line 13. 
 
