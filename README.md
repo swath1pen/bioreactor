@@ -7,9 +7,6 @@ https://3d.nih.gov/<build>
 https://threejs.org/editor/ 
 
 
-@@ -10,46 +10,101 @@ https://threejs.org/editor/
-
-
 ## To create your own build web page, clone this Repo in Visual Studio Code.
 
 ## Web Page Structure
@@ -119,8 +116,7 @@ Your build should now be available on a webpage at https://${githubUser}.github.
 
 ## License
 
-@@ -53,3 +105,4 @@ This project is open source and available under the [MIT License](LICENSE).
+This project is open source and available under the [MIT License](LICENSE).
 ---
 
-Happy experimenting!
-Happy building/experimenting!
+Happy building/coding/experimenting!
