@@ -8,8 +8,8 @@ https://threejs.org/editor/
 
 
 
-####################### Deploy your BioEchemBuilds Web Page ########################
-## To Add Your Build Clone this Repo in Visual Studio Code
+
+## To Create your own build web page clone this Repo in Visual Studio Code.
 
 1. **Replace files in /main with your CAD .pdf file and Part List .xlsx files.**
 
