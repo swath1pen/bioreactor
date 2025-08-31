@@ -3,7 +3,7 @@ export const About = () => {
   const frontendSkills = [
     "NIH 3D Database Deposit",
   ];
-  const backendSkills = ["3D Printing", "Gasket Fabrication", "Reactor Assembly"];
+  const backendSkills = ["3D Printing", "Gasket Fabrication", "Reactor Assembly", "Running Experiments"];
   return (
     <section
       id="about"
