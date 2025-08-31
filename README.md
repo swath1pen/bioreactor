@@ -11,37 +11,39 @@ https://threejs.org/editor/
 
 ## To create your own build web page, clone this Repo in Visual Studio Code.
 
-1. **Replace files in /main with your CAD .pdf file and Part List .xlsx files.**
+1. **Replace file in /main with your CAD .pdf file named <build>_CAD.pdf**
+   
+3. **Replace file in /main with your Part List .xlsx file named <build>_partlist.pdf**
 
-2. **Replace files in /public with your build .stl file and .gltf scene named 'scene1.gltf' .**
+5. **Replace .stl files in /public with your <build>.stl file.**
 
-3. **Three.js/editor can covert to .gltf files.**
+6. **Three.js/editor can covert to .gltf files. Replace .gltf scene in /public with your scene named 'scene1.gltf'**
 
-4. **Change content links for your build in main/src/components/section/Home.jsx**
+7. **Change content links for your build in main/src/components/section/Home.jsx**
    - Edit content for title and description lines: 44 and 47.
    - Edit links on lines: 12, 62, 70, 84, 100, 106, 113, 119.
      
-5. **Change links for your build in main/src/components/section/Usage.jsx**
+8. **Change links for your build in main/src/components/section/Usage.jsx**
    - Edit link to NIH 3D deposit on line 8.
    - Edit protocol links and names lines 14-27.
    - Edit profile links lines 92-113.
   
-6. **Change links for your build in main/src/components/section/Custom.jsx**
+9. **Change links for your build in main/src/components/section/Custom.jsx**
    - Edit content on lines 17,19,39 and 51,53,76.
    - Edit protocol links and names lines 36 and 73.
      
-7. **Change build name in main/vite.config.js**
+10. **Change build name in main/vite.config.js**
    - Edit line 8.
 
-8. **Change github page name name in main/package.json**
+11. **Change github page name name in main/package.json**
    - Edit line 3.
      
-9. **Change github page name name in main/index.html**
+11. **Change github page name name in main/index.html**
    - Edit line 13. 
 
-10. **Make new public Github repository with build name and add all edited repo files.**
+11. **Make new public Github repository with build name and add all edited repo files.**
 
-11. **Deploy**
+12. **Deploy**
 
 
 ## License
