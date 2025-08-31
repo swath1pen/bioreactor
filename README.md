@@ -9,7 +9,7 @@ https://threejs.org/editor/
 
 
 
-## To Create your own build web page clone this Repo in Visual Studio Code.
+## To create your own build web page, clone this Repo in Visual Studio Code.
 
 1. **Replace files in /main with your CAD .pdf file and Part List .xlsx files.**
 
