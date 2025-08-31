@@ -1,4 +1,4 @@
-# This is an example repo for BioEchemBuilds
+# This is an example build repo for BioEchemBuilds
 ### NIH 3D Print Database - Deposit Your Build
 https://3d.nih.gov/<build>
 ### Protocols.io - Deposit Your Protocols
