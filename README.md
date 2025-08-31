@@ -6,7 +6,7 @@ Clone repository and customize to your build.
 https://3d.nih.gov/<build>
 
 ### WebApp Hosted on GitHub Pages
-https://username.github.io/<build.
+https://username.github.io/<build>
 
 ## Protocol.io Links
 
