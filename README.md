@@ -8,11 +8,11 @@ https://3d.nih.gov/<build>
 https://threejs.org/editor/ 
 
 
-## To create your own build web page, clone this Repo in Visual Studio Code.
+## To create your own build web page, clone this Repo in Visual Studio Code with the build name.
 
 ## Build Web Page Structure
 ```
-your-build-page/
+build/
 ├── public/
 │   └── build.stl
 │   └── scene1.gltf
