@@ -1,20 +1,11 @@
 # This is an example repo for BioEchemBuilds
-
-Clone repository and customize to your build. 
-
-### NIH 3D Print Database Deposit Link to your Build
+### NIH 3D Print Database - Deposit Your Build
 https://3d.nih.gov/<build>
+### NIH 3D Print Database - Deposit Your Protocol
+protocols.io
 
-### WebApp Hosted on GitHub Pages created from this repo Link
-https://username.github.io/<build>
 
-## Protocol.io Link
-
-1. **Build Assembly**
-
-2. **Build Usage**
-
-####################### Deploy your own ########################
+####################### Deploy your BioEchemBuilds Web Page ########################
 ## To Add Your Build Clone this Repo in Visual Studio Code
 
 1. **Replace files in /main with your CAD .pdf file and Part List .xlsx files.**
