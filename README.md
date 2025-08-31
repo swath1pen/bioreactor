@@ -9,7 +9,7 @@ https://threejs.org/editor/
 
 ## To create your own build web page, clone this Repo in Visual Studio Code.
 
-## Web Page Structure
+## Build Web Page Structure
 ```
 your-build-page/
 ├── public/
