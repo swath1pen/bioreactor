@@ -67,10 +67,11 @@ export const Home = () => {
               CAD Files
             </a>
             <a
-              href="#custom"
-              className="bg-emerald-300 text-white py-3 px-6 rounded font-medium transition-all duration-200 
-                hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(59, 130, 246, 0.2)] hover:bg-blue-500/10"
-            >
+                href="https://github.com/swath1pen/bioreactor/raw/main/bioreactor_partlist.xlsx"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-emerald-300 text-white py-3 px-6 rounded font-medium transition relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(59, 130, 246, 0.4)]"
+              >
               Part List
             </a>
           </div>
@@ -102,7 +103,7 @@ export const Home = () => {
           className="flex items-center"
         >
           <img
-            src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/nih.png"
+            src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/logos/nih.png"
             alt="gitlogo"
             className="w-24 h-auto mx-auto cursor-pointer opacity-90 hover:opacity-100 transition"
           />
@@ -115,7 +116,7 @@ export const Home = () => {
           className="flex items-center"
         >
           <img
-            src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/logomark.png"
+            src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/logos/protocol_logo.png"
             alt="protocologo"
             className="w-24 h-auto mx-auto cursor-pointer opacity-90 hover:opacity-100 transition"
           />

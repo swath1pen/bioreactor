@@ -90,7 +90,7 @@ export const Usage = () => {
                   <div className="flex gap-4 pt-2">
                     {/* GitHub */}
                     <a href="https://github.com/swath1pen" target="_blank" rel="noopener noreferrer">
-                      <img src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/github-mark-white.png" alt="GitHub" className="w-8 h-8 hover:scale-110 transition" />
+                      <img src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/logos/github_logo.png" alt="GitHub" className="w-8 h-8 hover:scale-110 transition" />
                     </a>
                     {/* ORCID */}
                     <a href="https://orcid.org/0000-0001-7566-8767" target="_blank" rel="noopener noreferrer">
@@ -98,11 +98,11 @@ export const Usage = () => {
                     </a>
                     {/* BlueSky */}
                     <a href="https://bsky.app/profile/swath1.bsky.social" target="_blank" rel="noopener noreferrer">
-                      <img src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/bluesky_logo.png" alt="GitHub" className="w-10 h-8 hover:scale-110 transition" />
+                      <img src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/logos/bluesky_logo.png" alt="GitHub" className="w-10 h-8 hover:scale-110 transition" />
                     </a>
                     {/* GScholar */}
                     <a href="https://scholar.google.com/citations?user=QiISpWMAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">
-                      <img src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/google_scholar_logo.png" alt="ORCID" className="w-8 h-8 hover:scale-110 transition" />
+                      <img src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/logos/google_scholar_logo.png" alt="ORCID" className="w-8 h-8 hover:scale-110 transition" />
                     </a>
                     {/* LinkedIn */}
                     <a href="https://www.linkedin.com/in/swathi-penumutchu-135450b1" target="_blank" rel="noopener noreferrer">
@@ -110,7 +110,7 @@ export const Usage = () => {
                     </a>
                     {/* Research Gate */}
                     <a href="https://www.researchgate.net/profile/Swathi_Penumutchu" target="_blank" rel="noopener noreferrer">
-                      <img src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/research_gate_logo.png" alt="LinkedIn" className="w-8 h-8 hover:scale-110 transition" />
+                      <img src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/logos/research_gate_logo.png" alt="LinkedIn" className="w-8 h-8 hover:scale-110 transition" />
                     </a>
                   </div>
                 </li>
@@ -127,11 +127,11 @@ export const Usage = () => {
                   <div className="flex gap-4 pt-2">
                     {/* GitHub */}
                     <a href="https://github.com/swath1pen/bioreactor" target="_blank" rel="noopener noreferrer">
-                      <img src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/github-mark-white.png" alt="GitHub" className="w-8 h-8 hover:scale-110 transition" />
+                      <img src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/logos/github_logo.png" alt="GitHub" className="w-8 h-8 hover:scale-110 transition" />
                     </a>
                     {/* BioEchemBuilds */}
                     <a href="https://furstlab.github.io/BioEchemBuilds/" target="_blank" rel="noopener noreferrer">
-                      <img src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/green_blue_logo.png" alt="GitHub" className="w-50 h-12 hover:scale-110 transition" />
+                      <img src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/logos/bioechem_logo.png" alt="GitHub" className="w-50 h-12 hover:scale-110 transition" />
                     </a>
                   </div>
               </div>
