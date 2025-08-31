@@ -1,18 +1,18 @@
-# 3D Print Design for Customizable Microbial Bioreactor
+# This is an example repo for BioEchemBuilds
 
-This design is for a 100mL bioreactor for microbial electrochemical experimentation. 
+Clone repository and customize to your build. 
 
 ### NIH 3D Print Database Deposit
-https://3d.nih.gov/
+https://3d.nih.gov/<build>
 
-### WebApp_beta
-https://swath1pen.github.io/bioreactor
+### WebApp Hosted on GitHub Pages
+https://username.github.io/<build.
 
-## Protocol.io for Fabrication Notes
+## Protocol.io Links
 
-1. **SLA Printing with FormLabs Printers**
+1. **Build Assembly**
 
-2. **Fabrication of Gaskets**
+2. **Build Usage**
 
 ## License
 
