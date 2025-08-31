@@ -10,41 +10,95 @@ https://threejs.org/editor/
 
 
 ## To create your own build web page, clone this Repo in Visual Studio Code.
+## Folder Structure
+
+```
+your-build/
+├── public/
+│   |── build.stl                 # replace with your build
+│   └── scene1.gltf               # replace with your build
+├── src/
+│   ├── components/
+│   │   ├── Navbar.jsx
+│   │   ├── MobileMenu.jsx
+│   │   ├── LoadingScreen.jsx
+│   │   └── sections/
+│   │       ├── Home.jsx          # Edit
+│   │       ├── Usage.jsx         # Edit
+│   │       ├── Custom.jsx        # Edit
+│   │       └── Model.jsx
+│   ├── index.css          
+│   ├── App.jsx
+│   └── main.jsx
+├── package.json                   # edit line 3: "homepage": "https://${username}.github.io/${build}",
+
+├── vite.config.js                 # edit line 8: base: "/${buil}",
+├── build_CAD.pdf                  # replace with your build
+├── build_partlis.xlsx             # replace with your build
+├── index.html
+└── README.md
+```
 
 1. **Replace file in /main with your CAD .pdf file named <build>_CAD.pdf**
    
-3. **Replace file in /main with your Part List .xlsx file named <build>_partlist.pdf**
+2. **Replace file in /main with your Part List .xlsx file named <build>_partlist.pdf**
 
-5. **Replace .stl files in /public with your <build>.stl file.**
+3. **Replace .stl files in /public with your <build>.stl file.**
 
-6. **Three.js/editor can covert to .gltf files. Replace .gltf scene in /public with your scene named 'scene1.gltf'**
+4. **Replace .gltf scene in /public with your scene named 'scene1.gltf'**
 
-7. **Change content links for your build in main/src/components/section/Home.jsx**
+5. **Change content links for your build in main/src/components/section/Home.jsx**
+   - Edit line 8 with github username and line 9 with build name.
    - Edit content for title and description lines: 44 and 47.
-   - Edit links on lines: 12, 62, 70, 84, 100, 106, 113, 119.
+   - Edit link to NIH 3D deposit on line 104.
+   - Edit links on 117.
      
-8. **Change links for your build in main/src/components/section/Usage.jsx**
-   - Edit link to NIH 3D deposit on line 8.
-   - Edit protocol links and names lines 14-27.
-   - Edit profile links lines 92-113.
+6. **Change links for your build in main/src/components/section/Usage.jsx**
+   - Edit line 4 with github username and line 5 with build name.
+   - Edit link to NIH 3D deposit on line 12.
+   - Edit protocol links and names lines 19-31.
+   - Edit profile links lines 108-132.
   
-9. **Change links for your build in main/src/components/section/Custom.jsx**
+7. **Change links for your build in main/src/components/section/Custom.jsx**
    - Edit content on lines 17,19,39 and 51,53,76.
    - Edit protocol links and names lines 36 and 73.
      
-10. **Change build name in main/vite.config.js**
+8. **Change build name in main/vite.config.js**
    - Edit line 8.
 
-11. **Change github page name name in main/package.json**
+9. **Change github page name name in main/package.json**
    - Edit line 3.
      
-11. **Change github page name name in main/index.html**
+10. **Change github page name name in main/index.html**
    - Edit line 13. 
 
 11. **Make new public Github repository with build name and add all edited repo files.**
 
 12. **Deploy**
 
+**Install dependencies:**
+
+   ```bash
+   npm install gh-pages
+   ```
+
+   ```bash
+   npm install
+   ```
+
+**Start the development server:**
+
+   ```bash
+   npm run dev
+   ```
+
+## Build
+
+```bash
+npm run deploy
+```
+
+View your build webpage at https://${username}.github.io/${build}
 
 ## License
 
