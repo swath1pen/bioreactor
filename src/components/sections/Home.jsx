@@ -67,7 +67,7 @@ export const Home = () => {
               CAD Files
             </a>
             <a
-              href="#projects"
+              href="#custom"
               className="bg-emerald-300 text-white py-3 px-6 rounded font-medium transition-all duration-200 
                 hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(59, 130, 246, 0.2)] hover:bg-blue-500/10"
             >
@@ -80,7 +80,7 @@ export const Home = () => {
       <div className="w-full flex justify-center items-center mt-12 mb-4 space-x-12">
         {/* GitHub logo link - half size */}
         <a
-          href="https://github.com/swath1pen"
+          href="https://github.com/swath1pen/bioreactor"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center"
@@ -109,7 +109,7 @@ export const Home = () => {
         </a>
         {/* Lab/NIH logo link */}
         <a
-          href="https://www.protocols.io/researchers/swathi-penumutchu"
+          href="https://www.protocols.io/file-manager/3CD35A65863C11F0B2120A58A9FEAC02"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center"

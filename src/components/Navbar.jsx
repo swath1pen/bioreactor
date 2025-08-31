@@ -34,13 +34,13 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
               Usage
             </a>
             <a
-              href="#projects"
+              href="#custom"
               className="text-gray-300 hover:text-white transition-colors"
             >
               Customization
             </a>
             <Link
-              to="/contact"
+              to="/model"
               className="text-gray-300 hover:text-white transition-colors"
             >
               Explore 3D Model

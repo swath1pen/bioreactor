@@ -25,7 +25,7 @@ export const MobileMenu = ({ menuOpen, setMenuOpen }) => {
         Home
       </a>
       <a
-        href="#about"
+        href="#usage"
         onClick={() => setMenuOpen(false)}
         className={`text-2xl font-semibold text-white my-4 transform transition-transform duration-300
           ${menuOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}
@@ -33,7 +33,7 @@ export const MobileMenu = ({ menuOpen, setMenuOpen }) => {
         Usage
       </a>
       <a
-        href="#projects"
+        href="#custom"
         onClick={() => setMenuOpen(false)}
         className={`text-2xl font-semibold text-white my-4 transform transition-transform duration-300
           ${menuOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}
@@ -42,7 +42,7 @@ export const MobileMenu = ({ menuOpen, setMenuOpen }) => {
       </a>
       {/* "Model" uses Link to /contact */}
       <Link
-        to="/contact"
+        to="/model"
         onClick={() => setMenuOpen(false)}
         className={`text-2xl font-semibold text-white my-4 transform transition-transform duration-300
           ${menuOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}
