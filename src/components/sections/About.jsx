@@ -2,9 +2,8 @@ import { RevealOnScroll } from "../RevealOnScroll";
 export const About = () => {
   const frontendSkills = [
     "NIH 3D Database Deposit",
-    "Journal of Chemical Education Paper",
   ];
-  const backendSkills = ["3D Printing", "Gasket Fabrication", "Assembly"];
+  const backendSkills = ["3D Printing", "Gasket Fabrication", "Reactor Assembly"];
   return (
     <section
       id="about"
