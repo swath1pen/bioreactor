@@ -4,16 +4,12 @@ import { OrbitControls } from "@react-three/drei";
 import { useRef } from "react";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 
-// Set these variables ONCE at the top
-const githubUser = "swath1pen";
-const repoName = "bioreactor";
-
-// Rotating STL model component with dynamic URL
+// Rotating STL model component with hardcoded URL
 function RotatingSTL() {
   const meshRef = useRef();
   const geometry = useLoader(
     STLLoader,
-    `https://raw.githubusercontent.com/${githubUser}/${repoName}/main/public/${repoName}.stl`
+    "https://raw.githubusercontent.com/username/build/main/public/build.stl"
   );
 
   useFrame(() => {
@@ -27,7 +23,7 @@ function RotatingSTL() {
     <mesh
       ref={meshRef}
       geometry={geometry}
-      scale={0.1}
+      scale={0.1} // Make object smaller; adjust as needed
       castShadow
       receiveShadow
     >
@@ -45,13 +41,13 @@ export const Home = () => {
       <RevealOnScroll>
         <div className="text-center z-10 px-4 flex-1 flex flex-col justify-center mt-20">
           <h1 className="text-2xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-emerald-600 to-emerald-400 bg-clip-text text-transparent leading-right">
-            Microbial Electrochemical Bioreactor
+            Build Name
           </h1>
           <p className="tex-gray-400 text-lg mb-4 max-w-lg mx-auto">
-            3D printable electrochemical bioreactor for lab-scale microbial electrochemistry.
+            Build .
           </p>
 
-          {/* 3D object viewer */}
+          {/* 3D object viewer centered and close to the title */}
           <div className="mx-auto my-6 w-full max-w-md h-64 rounded-xl bg-gray-800 flex items-center justify-center shadow-lg">
             <Canvas camera={{ position: [0, 0, 6] }}>
               <ambientLight intensity={0.9} />
@@ -63,29 +59,31 @@ export const Home = () => {
 
           <div className="flex justify-center space-x-4">
             <a
-              href={`https://github.com/${githubUser}/${repoName}/raw/main/${repoName}_CAD.pdf`}
+              href="https://github.com/username/build/raw/main/build_CAD.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-emerald-700 text-white py-3 px-6 rounded font-medium transition relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(59, 130, 246, 0.4)]"
+              className="bg-emerald-700 !text-white py-3 px-6 rounded font-medium transition relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(59,130,246,0.4)]"
+              style={{ color: "white" }}
             >
               CAD Files
             </a>
             <a
-              href={`https://github.com/${githubUser}/${repoName}/raw/main/${repoName}_partlist.xlsx`}
+              href="https://github.com/swath1pen/bioreactor/raw/main/bioreactor_partlist.xlsx"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-emerald-300 text-white py-3 px-6 rounded font-medium transition relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(59, 130, 246, 0.4)]"
+              className="bg-emerald-300 !text-white py-3 px-6 rounded font-medium transition relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(59,130,246,0.4)]"
+              style={{ color: "white" }}
             >
               Part List
             </a>
           </div>
         </div>
       </RevealOnScroll>
-      {/* Bottom row with GitHub logo and Lab PNG/logo side-by-side */}
+      {/* Bottom row with GitHub logo and Lab PNG logo side-by-side */}
       <div className="w-full flex justify-center items-center mt-12 mb-4 space-x-12">
-        {/* GitHub logo link */}
+        {/* GitHub logo link - half size */}
         <a
-          href={`https://github.com/${githubUser}/${repoName}`}
+          href="https://github.com/swath1pen/bioreactor"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center"
@@ -107,12 +105,12 @@ export const Home = () => {
           className="flex items-center"
         >
           <img
-            src={`https://raw.githubusercontent.com/${githubUser}/${repoName}/main/logos/nih.png`}
-            alt="nihlogo"
+            src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/logos/nih.png"
+            alt="gitlogo"
             className="w-24 h-auto mx-auto cursor-pointer opacity-90 hover:opacity-100 transition"
           />
         </a>
-        {/* Protocol.io document */}
+        {/* Lab/NIH logo link */}
         <a
           href="https://www.protocols.io/file-manager/3CD35A65863C11F0B2120A58A9FEAC02"
           target="_blank"
@@ -120,7 +118,7 @@ export const Home = () => {
           className="flex items-center"
         >
           <img
-            src={`https://raw.githubusercontent.com/${githubUser}/${repoName}/main/logos/protocol_logo.png`}
+            src="https://raw.githubusercontent.com/swath1pen/bioreactor/main/logos/protocol_logo.png"
             alt="protocologo"
             className="w-24 h-auto mx-auto cursor-pointer opacity-90 hover:opacity-100 transition"
           />
