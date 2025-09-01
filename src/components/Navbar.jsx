@@ -10,7 +10,10 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <Link to="https://furstlab.github.io/BioEchemBuilds/" className="font-mono text-xl font-bold text-white">
-            BioEchem<span className="text-emerlad-300">⚡Builds</span>
+            BioEchem
+            <span className="font-bold mb-3 md:mb-6 bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent leading-tight">
+            ⚡Builds
+            </span>
           </Link>
 
           <div
