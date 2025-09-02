@@ -8,7 +8,11 @@ https://3d.nih.gov/<build>
 https://threejs.org/editor/ 
 
 
-## To create your own build web page, clone this Repo in Visual Studio Code with the build name.
+## To create your own build web page: 
+
+Download Visual Studio Code.
+
+Open VS Code and clone this repo https://github.com/furstlab/example_build_repo 
 
 ## Build Web Page Structure
 ```
@@ -38,22 +42,22 @@ build/
 ├── index.html
 └── README.md
 ```
-1. **Replace file in /main with your CAD .pdf file named <build>_CAD.pdf**
+1. **Replace file in /main with your CAD .pdf file named build_CAD.pdf**
 
 
-2. **Replace file in /main with your Part List .xlsx file named <build>_partlist.pdf**
+2. **Replace file in /main with your Part List .xlsx file named build_partlist.pdf**
 
-3. **Replace .stl files in /public with your <build>.stl file.**
+3. **Replace .stl files in /public with your build.stl file.**
 
 4. **Replace .gltf scene in /public with your scene named 'scene1.gltf'**
 
 5. **Change content links for your build in main/src/components/section/Home.jsx**
-   - Edit githubUser line 8 and repoName (build name) line 9.
+   - Edit githubUser (github username) line 8 and repoName (build name) line 9.
    - Edit content for title and description lines: 44 and 47.
    - Edit links on lines: 12, 62, 70, 84, 100, 106, 113, 119.
 
 6. **Change links for your build in main/src/components/section/Usage.jsx**
-   - Edit githubUser line 4 and repoName (build name) line 5.
+   - Edit githubUser (github username) line 4 and repoName (build name) line 5.
    - Edit link to NIH 3D deposit on line 12.
    - Edit associated protocol links and names lines 18-31.
    - Edit author profile links line 108-132.
