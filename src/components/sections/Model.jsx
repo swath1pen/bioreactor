@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -8,22 +9,30 @@ const Model = () => {
 
   useEffect(() => {
     if (!mountRef.current) return;
+    mountRef.current.innerHTML = "";
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    const resizeRenderer = () => {
+      if (mountRef.current) {
+        const { clientWidth, clientHeight } = mountRef.current;
+        renderer.setSize(clientWidth, clientHeight);
+      }
+    };
+
+    resizeRenderer();
     mountRef.current.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-
     const camera = new THREE.PerspectiveCamera(
       45,
-      window.innerWidth / window.innerHeight,
-      1,
+      mountRef.current.clientWidth / mountRef.current.clientHeight,
+      0.1,
       1000
     );
     camera.position.set(4, 6, 11);
@@ -63,8 +72,6 @@ const Model = () => {
         mesh.scale.setScalar(scaleFactor);
         mesh.position.set(0, 1.05, 1);
         scene.add(mesh);
-        const progressEl = document.getElementById("progress-container");
-        if (progressEl) progressEl.style.display = "none";
       },
       undefined,
       (error) => {
@@ -73,11 +80,13 @@ const Model = () => {
     );
 
     const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      if (mountRef.current) {
+        const { clientWidth, clientHeight } = mountRef.current;
+        camera.aspect = clientWidth / clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(clientWidth, clientHeight);
+      }
     };
-
     window.addEventListener("resize", handleResize);
 
     let animationId;
@@ -88,13 +97,15 @@ const Model = () => {
     }
     animate();
 
-    // Cleanup
     return () => {
       if (animationId) cancelAnimationFrame(animationId);
       window.removeEventListener("resize", handleResize);
       controls.dispose();
       renderer.dispose();
-      if (mountRef.current && renderer.domElement.parentNode === mountRef.current) {
+      if (
+        mountRef.current &&
+        renderer.domElement.parentNode === mountRef.current
+      ) {
         mountRef.current.removeChild(renderer.domElement);
       }
       scene.traverse((object) => {
@@ -110,8 +121,40 @@ const Model = () => {
     };
   }, []);
 
-  return <div ref={mountRef} style={{ width: '100vw', height: '100vh' }} />;
+  return (
+    <div style={{ width: "100vw", height: "100vh", background: "black", position: "relative" }}>
+      <Link
+        to="/"
+        style={{
+          position: "fixed",
+          top: 16,
+          left: 16,
+          zIndex: 100,
+          background: "rgba(30, 41, 59, 0.85)",
+          color: "white",
+          padding: "8px 16px",
+          borderRadius: "8px",
+          fontWeight: 600,
+          fontSize: "1rem",
+          letterSpacing: "0.03em",
+          textDecoration: "none",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.24)",
+          transition: "background 0.2s",
+        }}
+        onMouseOver={e => (e.currentTarget.style.background = "rgba(16,185,129,0.9)")}
+        onMouseOut={e => (e.currentTarget.style.background = "rgba(30,41,59,0.85)")}
+      >
+        ← Back Home
+      </Link>
+      <div
+        ref={mountRef}
+        style={{
+          width: "100vw",
+          height: "100vh"
+        }}
+      />
+    </div>
+  );
 };
 
 export default Model;
-
