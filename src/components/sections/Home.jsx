@@ -48,7 +48,7 @@ export const Home = () => {
           </p>
 
           {/* 3D object viewer centered and close to the title */}
-          <div className="mx-auto my-6 w-full max-w-md h-64 rounded-xl bg-slate-800 flex items-center justify-center shadow-lg">
+          <div className="mx-auto my-6 w-full max-w-md h-64 rounded-xl bg-slate-950 flex items-center justify-center shadow-lg">
             <Canvas camera={{ position: [0, 0, 6] }}>
               <ambientLight intensity={0.9} />
               <directionalLight position={[2, 2, 5]} />
